@@ -91,8 +91,6 @@
       document.addEventListener("DOMContentLoaded", (e) => {
         const fullNameEl = document.querySelector("#fullName");
 
-        // console.log();
-
         const emailEl = document.querySelector("#email");
         const phoneEl = document.querySelector("#phone");
         const addressEl = document.querySelector("#address");
@@ -134,10 +132,12 @@
           },
         ]);
 
-        validator.onSuccess((event) => {
-          // console.log("Form submitted");
+        // console.log(validator);
+        // console.log(localStorage.getItem("usr"));
 
+        validator.onSuccess((event) => {
           const uuId = crypto.randomUUID();
+          // console.log(validator);
 
           const formData = new FormData(userFormEl);
           const userData = Object.fromEntries(formData);
@@ -155,6 +155,35 @@
             phone,
             address,
           };
+
+          const userDataArr = [];
+          const LOCAL_STORAGE_USER_KEY = "user";
+
+          if (localStorage.getItem(LOCAL_STORAGE_USER_KEY)) {
+            const existingUserDataString = localStorage.getItem(
+              LOCAL_STORAGE_USER_KEY
+            );
+
+            const existingUserDataInJSON = JSON.parse(existingUserDataString);
+
+            existingUserDataInJSON.push(userEntireData);
+            localStorage.setItem(
+              LOCAL_STORAGE_USER_KEY,
+              JSON.stringify(existingUserDataInJSON)
+            );
+          } else {
+            console.log(userDataArr);
+            console.log(userEntireData);
+
+            userDataArr.push(userEntireData);
+
+            localStorage.setItem(
+              LOCAL_STORAGE_USER_KEY,
+              JSON.stringify(userDataArr)
+            );
+          }
+
+          userFormEl.reset();
         });
       });
     </script>
