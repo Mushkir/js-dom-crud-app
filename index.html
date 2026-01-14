@@ -141,6 +141,8 @@
         // Local storage key
         const LOCAL_STORAGE_USER_KEY = "user";
 
+        let existingUserId = null;
+
         validator.addField(fullNameEl, [
           {
             rule: "required",
@@ -212,8 +214,11 @@
           // 4. Append child element with parent element
 
           const tableBodyEl = document.getElementById("table-body");
+          tableBodyEl.innerHTML = "";
+
           for (let index = 0; index < allUsersDataArr.length; index++) {
             const userData = allUsersDataArr[index];
+            // console.log(userData);
 
             // Table row
             const trEl = document.createElement("tr");
@@ -246,15 +251,21 @@
             //Edit Action
             const editAction = document.createElement("a");
             editAction.className =
-              "font-medium text-fg-brand hover:underline mr-4 text-blue-500";
-            editAction.href = userData.id;
+              "font-medium text-fg-brand cursor-pointer hover:underline mr-4 text-blue-500";
+            // editAction.href = userData.id;
             editAction.innerText = "Edit";
+            // editAction.id = "edit-button";
 
             const deleteAction = document.createElement("a");
             deleteAction.className =
               "font-medium text-fg-brand hover:underline text-red-500";
             deleteAction.href = userData.id;
             deleteAction.innerText = "Delete";
+
+            // Edit function event listener
+            editAction.addEventListener("click", () => {
+              editUserData(userData.id);
+            });
 
             actionsCell.append(editAction, deleteAction);
 
@@ -270,12 +281,31 @@
           }
         }
 
-        getAllData();
+        // Edit a user data
+        function editUserData(userId) {
+          // console.log(userId);
+          const allUsersData = JSON.parse(
+            localStorage.getItem(LOCAL_STORAGE_USER_KEY)
+          );
+
+          existingUserId = userId;
+          // console.log(existingUserId);
+
+          const filteredData = allUsersData.find((data) => {
+            return userId == data.id;
+          });
+
+          // console.log(filteredData);
+          fullNameEl.value = filteredData.fullName;
+          phoneEl.value = filteredData.phone;
+          emailEl.value = filteredData.email;
+          addressEl.value = filteredData.address;
+          submitBtnEl.innerText = "Save Changes";
+        }
 
         // Form onSubmit function
         validator.onSuccess((event) => {
           const uuId = crypto.randomUUID();
-          // console.log(validator);
 
           const formData = new FormData(userFormEl);
           const userData = Object.fromEntries(formData);
@@ -286,16 +316,37 @@
           // Object destructure
           const { email, fullName, phone, address } = userData;
 
-          const userEntireData = {
-            id: uuId,
-            email,
-            fullName,
-            phone,
-            address,
-          };
+          if (existingUserId) {
+            const allUsers = JSON.parse(
+              localStorage.getItem(LOCAL_STORAGE_USER_KEY)
+            );
 
-          createNewUserData(userEntireData);
+            const filteredData = allUsers.map((user) => {
+              return existingUserId == user.id
+                ? { ...user, fullName, email, phone, address }
+                : user;
+            });
+
+            localStorage.setItem(
+              LOCAL_STORAGE_USER_KEY,
+              JSON.stringify(filteredData)
+            );
+
+            getAllData();
+            existingUserId = null;
+          } else {
+            const userEntireData = {
+              id: uuId,
+              email,
+              fullName,
+              phone,
+              address,
+            };
+            createNewUserData(userEntireData);
+          }
         });
+
+        getAllData();
       });
     </script>
   </body>
