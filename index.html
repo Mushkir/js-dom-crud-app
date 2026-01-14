@@ -29,12 +29,10 @@
           <input
             type="text"
             id="fullName"
+            name="fullName"
             class="bg-slate-50 px-3 py-2 rounded mt-1.5"
             placeholder="Enter the full name"
           />
-
-          <small id="full-name-err-msg-element" class="text-red-500 mt-2">
-          </small>
         </div>
 
         <!-- Email -->
@@ -43,6 +41,7 @@
           <input
             type="email"
             id="email"
+            name="email"
             class="bg-slate-50 px-3 py-2 rounded mt-1.5"
             placeholder="Enter the email address"
           />
@@ -53,6 +52,7 @@
           <input
             type="tel"
             id="phone"
+            name="phone"
             class="bg-slate-50 px-3 py-2 rounded mt-1.5"
             placeholder="Enter the phone number"
           />
@@ -65,6 +65,7 @@
           <input
             type="text"
             id="address"
+            name="address"
             class="bg-slate-50 px-3 py-2 rounded mt-1.5"
             placeholder="Enter the user address"
           />
@@ -89,6 +90,8 @@
     <script>
       document.addEventListener("DOMContentLoaded", (e) => {
         const fullNameEl = document.querySelector("#fullName");
+
+        // console.log();
 
         const emailEl = document.querySelector("#email");
         const phoneEl = document.querySelector("#phone");
@@ -131,33 +134,28 @@
           },
         ]);
 
-        // const fullNameErrMsgEl = document.querySelector(
-        //   "#full-name-err-msg-element"
-        // );
+        validator.onSuccess((event) => {
+          // console.log("Form submitted");
 
-        // Form submit
-        // userFormEl.addEventListener("submit", (e) => {
-        //   e.preventDefault();
-        //   const fullName = fullNameEl.value.trim();
-        //   const fullNameErrMsgEl = document.querySelector(
-        //     "#full-name-err-msg-element"
-        //   );
+          const uuId = crypto.randomUUID();
 
-        //   if (fullName.length == 0 || fullName == "") {
-        //     //
-        //     // console.log();
+          const formData = new FormData(userFormEl);
+          const userData = Object.fromEntries(formData);
 
-        //     fullNameErrMsgEl.classList.remove("hidden");
-        //     fullNameErrMsgEl.innerText = "Full name cannot be empty";
-        //   } else if (fullName.length < 3) {
-        //     // .
-        //     fullNameErrMsgEl.classList.remove("hidden");
-        //     fullNameErrMsgEl.innerText =
-        //       "Full name must be greater than 3 characters";
-        //   } else {
-        //     console.log("Submitted");
-        //   }
-        // });
+          // 1. Object chaining
+          // const email = userData.emails;
+
+          // Object destructure
+          const { email, fullName, phone, address } = userData;
+
+          const userEntireData = {
+            id: uuId,
+            email,
+            fullName,
+            phone,
+            address,
+          };
+        });
       });
     </script>
   </body>
