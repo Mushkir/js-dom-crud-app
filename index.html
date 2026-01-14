@@ -258,13 +258,16 @@
 
             const deleteAction = document.createElement("a");
             deleteAction.className =
-              "font-medium text-fg-brand hover:underline text-red-500";
-            deleteAction.href = userData.id;
+              "font-medium text-fg-brand cursor-pointer hover:underline text-red-500";
             deleteAction.innerText = "Delete";
 
             // Edit function event listener
             editAction.addEventListener("click", () => {
               editUserData(userData.id);
+            });
+
+            deleteAction.addEventListener("click", () => {
+              deleteUserData(userData.id);
             });
 
             actionsCell.append(editAction, deleteAction);
@@ -301,6 +304,27 @@
           emailEl.value = filteredData.email;
           addressEl.value = filteredData.address;
           submitBtnEl.innerText = "Save Changes";
+        }
+
+        // Delete user data
+        function deleteUserData(userId) {
+          isConfirm = confirm("Are you sure to remove the selected data?");
+
+          if (isConfirm) {
+            const allUsersData = JSON.parse(
+            localStorage.getItem(LOCAL_STORAGE_USER_KEY)
+          );
+
+          const filteredData = allUsersData.filter((data) => {
+            return userId !== data.id;
+          });
+
+          localStorage.setItem(
+            LOCAL_STORAGE_USER_KEY,
+            JSON.stringify(filteredData)
+          );
+          getAllData();
+          }
         }
 
         // Form onSubmit function
