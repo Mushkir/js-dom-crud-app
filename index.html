@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/src/index.css" rel="stylesheet" />
 
+    <script src="https://unpkg.com/just-validate@latest/dist/just-validate.production.min.js"></script>
+
     <title>User Register Form</title>
   </head>
   <body>
@@ -16,6 +18,7 @@
 
       <form
         method="post"
+        id="userForm"
         class="bg-slate-200 w-full max-w-lg mx-auto mt-3 p-3 rounded"
       >
         <!-- Full name -->
@@ -29,6 +32,9 @@
             class="bg-slate-50 px-3 py-2 rounded mt-1.5"
             placeholder="Enter the full name"
           />
+
+          <small id="full-name-err-msg-element" class="text-red-500 mt-2">
+          </small>
         </div>
 
         <!-- Email -->
@@ -63,6 +69,7 @@
             placeholder="Enter the user address"
           />
         </div>
+
         <div>
           <button
             class="px-4 hover:bg-red-500 transition-all hover:text-white py-2 rounded"
@@ -70,6 +77,7 @@
             Cancel
           </button>
           <button
+            id="submit-button"
             class="cursor-pointer bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition-all"
           >
             Save
@@ -77,5 +85,80 @@
         </div>
       </form>
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", (e) => {
+        const fullNameEl = document.querySelector("#fullName");
+
+        const emailEl = document.querySelector("#email");
+        const phoneEl = document.querySelector("#phone");
+        const addressEl = document.querySelector("#address");
+
+        const submitBtnEl = document.querySelector("#submit-button");
+
+        const userFormEl = document.querySelector("#userForm");
+
+        const validator = new window.JustValidate(userFormEl);
+
+        validator.addField(fullNameEl, [
+          {
+            rule: "required",
+          },
+          {
+            rule: "minLength",
+            value: 3,
+          },
+        ]);
+
+        validator.addField(emailEl, [
+          {
+            rule: "required",
+          },
+          {
+            rule: "email",
+          },
+        ]);
+
+        validator.addField(phoneEl, [
+          {
+            rule: "required",
+          },
+        ]);
+
+        validator.addField(addressEl, [
+          {
+            rule: "required",
+          },
+        ]);
+
+        // const fullNameErrMsgEl = document.querySelector(
+        //   "#full-name-err-msg-element"
+        // );
+
+        // Form submit
+        // userFormEl.addEventListener("submit", (e) => {
+        //   e.preventDefault();
+        //   const fullName = fullNameEl.value.trim();
+        //   const fullNameErrMsgEl = document.querySelector(
+        //     "#full-name-err-msg-element"
+        //   );
+
+        //   if (fullName.length == 0 || fullName == "") {
+        //     //
+        //     // console.log();
+
+        //     fullNameErrMsgEl.classList.remove("hidden");
+        //     fullNameErrMsgEl.innerText = "Full name cannot be empty";
+        //   } else if (fullName.length < 3) {
+        //     // .
+        //     fullNameErrMsgEl.classList.remove("hidden");
+        //     fullNameErrMsgEl.innerText =
+        //       "Full name must be greater than 3 characters";
+        //   } else {
+        //     console.log("Submitted");
+        //   }
+        // });
+      });
+    </script>
   </body>
 </html>
